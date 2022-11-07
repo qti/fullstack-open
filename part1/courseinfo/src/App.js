@@ -1,73 +1,29 @@
-const Header = (props) => (
-  <>
-    <h1>{props.course}</h1>
-  </>
-)
+import { useState } from 'react'
 
-const Content = ({ parts }) => (
-    <>
-      {parts.map(part => <Part key={part.name} part={part.name} exercise={part.exercises}/>)}
-    </>
-)
+const Display = props => <div>{props.value}</div>
 
-const Part = ({ part, exercise }) => (
-  <>
-    <p>
-      {part} {exercise}
-    </p>
-  </>
-)
-
-const Total = ({ parts }) => (
-  <>
-    <p>Number of exercises {parts.reduce((acc, part) => acc + part.exercises, 0)}</p>
-  </>
+const Button = (props) => (
+  <button onClick={props.handleClick}>
+    {props.text}
+  </button>
 )
 
 const App = () => {
-  const course = 'Half Stack application development'
-  const parts = [
-    {
-      name: 'Fundamentals of React',
-      exercises: 10
-    },
-    {
-      name: 'Using props to pass data',
-      exercises: 7
-    },
-    {
-      name: 'State of a component',
-      exercises: 14
-    }
-  ]
+  const [value, setValue] = useState(10)
+
+  const setToValue = newValue => {
+    console.log('value now', newValue)
+    setValue(newValue)
+  }
 
   return (
     <div>
-      <Header course={course} />
-      <Content parts={parts} />
-      <Total parts={parts} />
+      <Display value={value} />
+      <Button handleClick={() => setToValue(1000)} text="thousand" />
+      <Button handleClick={() => setToValue(0)} text="reset" />
+      <Button handleClick={() => setToValue(value + 1)} text="increment" />
     </div>
   )
 }
-
-// const App = () => {
-//   const course = 'Half Stack application development'
-//   const part1 = 'Fundamentals of React'
-//   const exercises1 = 10
-//   const part2 = 'Using props to pass data'
-//   const exercises2 = 7
-//   const part3 = 'State of a component'
-//   const exercises3 = 14
-
-//   return (
-//     <div>
-//       <Header course={course} />
-//       <Content
-//         parts={{ part1, part2, part3 }}
-//         exercises={{ exercises1, exercises2, exercises3 }}/>
-//       <Total exercises={{ exercises1, exercises2, exercises3 }} />
-//     </div>
-//   )
-// }
 
 export default App
