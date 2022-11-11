@@ -1,5 +1,18 @@
 import { useState } from 'react'
 
+const StatisticsLine = ({text, value}) => {
+  return (
+    <>
+      <td>
+        {text}
+      </td>
+      <td>
+        {value}
+      </td>
+    </>
+  )
+}
+
 const Statistics = (props) => {
   const { good, neutral, bad, average } = props
 
@@ -10,11 +23,29 @@ const Statistics = (props) => {
   return (
     <>
       <h1>statistics</h1>
-      <p>good {good}</p>
-      <p>neutral {neutral}</p>
-      <p>bad {bad}</p>
-      <p>average {calcuateAverage()}</p>
-      <p>all {good + neutral + bad}</p>
+      {average.length > 0 ?
+        <>
+          <table>
+            <tr>
+              <StatisticsLine text="good" value={good} />
+            </tr>
+            <tr>
+              <StatisticsLine text="neutral" value={neutral} />
+            </tr>
+            <tr>
+              <StatisticsLine text="bad" value={bad} />
+            </tr>
+            <tr>
+              <td>average</td>
+              <td>{calcuateAverage()}</td>
+            </tr>
+            <tr>
+              <td>all</td>
+              <td>{good + neutral + bad}</td>
+            </tr>
+          </table>
+        </>
+      : <p>No feedback given</p>}
     </>
   )
 }
