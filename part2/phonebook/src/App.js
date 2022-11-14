@@ -3,6 +3,7 @@ import axios from 'axios'
 import Filter from './components/Filter'
 import PersonForm from './components/PersonForm'
 import Persons from './components/Persons'
+import personService from './services/persons'
 
 const App = () => {
   const [persons, setPersons] = useState([])
@@ -34,14 +35,32 @@ const App = () => {
 
   const addPerson = (event) => {
     event.preventDefault()
-    const nameAlreadyExists = Boolean(persons.find((person) => person.name === newName))
-    if (nameAlreadyExists) {
-      alert(`${newName} is already added to the phonebook`)
+    const preExistingPerson = persons.find((person) => person.name === newName)
+    if (preExistingPerson) {
+      if (window.confirm(`${newName} is already added to the phonebook, replace the old number with a new one?`)) {
+        personService
+          .update(preExistingPerson.id, { ...preExistingPerson, number: newNumber })
+          .then(returnedPerson =>
+            setPersons(persons.map(person => person.id !== preExistingPerson.id ? person : returnedPerson))
+          )
+      }
     } else {
-      setPersons(persons.concat({ name: newName, number: newNumber, id: persons.length + 1 }))
+      const person = {
+        name: newName,
+        number: newNumber,
+        id: persons.length + 1
+      }
+
+      personService
+        .create(person)
+        .then(returnedPerson =>
+          setPersons(persons.concat(returnedPerson))
+        )
+
     }
 
     setNewName('')
+    setNewNumber('')
   }
   return (
     <div>
@@ -55,7 +74,7 @@ const App = () => {
         newNumber={newNumber}
         handleNumberChange={handleNumberChange} />
       <h3>Numbers</h3>
-      <Persons persons={persons} filter={filter} />
+      <Persons persons={persons} filter={filter} setPersons={setPersons} />
     </div>
   )
 }
