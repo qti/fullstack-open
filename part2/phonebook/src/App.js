@@ -99,6 +99,13 @@ const App = () => {
         .then(returnedPerson => {
           setPersons(persons.concat(returnedPerson))
           fireSuccessMessage()
+        }).catch(error => {
+          setFailureMessage(
+            `${JSON.parse(error.request.responseText).error}`
+          )
+          setTimeout(() => {
+            setFailureMessage('')
+          }, 5000)
         })
     }
 
