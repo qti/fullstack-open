@@ -17,7 +17,8 @@ const initialBlogs = [
         title: "Title",
         author: "Author",
         url: "url",
-        likes: 0
+        likes: 0,
+
     }
 ]
 describe('when there is initially some notes saved', () => {
@@ -49,6 +50,36 @@ describe('when there is initially some notes saved', () => {
 
         const blogs = await Blog.find({})
         expect(blogs).toHaveLength(initialBlogs.length + 1)
+    })
+
+    test('a blog post can be deleted', async () => {
+        let blogs = await Blog.find({})
+
+        await api
+            .delete(`/api/blogs/${blogs[0].id}`)
+            .expect(204)
+
+        blogs = await Blog.find({})
+        expect(blogs).toHaveLength(initialBlogs.length - 1)
+    })
+
+    test('a blog post can be updated', async () => {
+        const updatedBlog = {
+            title: "Updated",
+            author: "Updated",
+            url: "Updated",
+            likes: 3
+        }
+
+        let blogs = await Blog.find({})
+        await api
+            .put(`/api/blogs/${blogs[0].id}`)
+            .send(updatedBlog)
+            .expect(200)
+            .expect('Content-Type', /application\/json/)
+
+        blogs = await Blog.find({})
+        expect(blogs[0].title).toBe("Updated")
     })
 })
 
